@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProductController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -31,6 +32,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('leads', LeadController::class);
     Route::resource('clients', ClientController::class);
     Route::resource('deals', DealController::class);
+    Route::resource('products', ProductController::class)->only([
+            'index',
+            'create',
+            'store',
+        ]);;
 });
 
 Route::resource('leads', LeadController::class);
