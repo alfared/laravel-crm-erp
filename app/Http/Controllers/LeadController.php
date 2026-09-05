@@ -4,8 +4,16 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use App\Domain\Lead\Models\Lead;
+use Inertia\Response;
+use App\Enums\LeadPriority;
+use App\Enums\LeadSource;
+use App\Enums\LeadStatus;
+use App\Models\Company;
+use App\Models\User;
+use App\Models\Lead;
 use App\Models\Client;
+use App\Http\Requests\StoreLeadRequest;
+use App\Http\Requests\UpdateLeadRequest;
 
 class LeadController extends Controller
 {
@@ -83,6 +91,85 @@ class LeadController extends Controller
 
     public function create()
     {
-        return Inertia::render('Leads/Create');
+        return Inertia::render('Leads/Create',[
+            'statuses' => collect(LeadStatus::cases())
+                ->map(fn (LeadStatus $status) => [
+                    'value' => $status->value,
+                    'label' => $status->label(),
+                ]),
+            'sources' => collect(LeadSource::cases())
+                ->map(fn (LeadSource $source) => [
+                    'value' => $source->value,
+                    'label' => $source->label(),
+                ]),
+            'priorities' => collect(LeadPriority::cases())
+                ->map(fn (LeadPriority $priority) => [
+                    'value' => $priority->value,
+                    'label' => $priority->label(),
+                ]),
+            'owners' => User::query()
+                ->select('id', 'name')
+                ->get(),
+            'companies' => Company::query()
+                ->select('id', 'name')
+                ->orderBy('name')
+                ->get(),
+        ]);
+    }
+
+    public function store(StoreLeadRequest $request)
+    {
+        $lead = Lead::create($request->validated());
+
+        return redirect()
+            ->route('leads.show', $lead)
+            ->with('success', 'Lead created successfully.');
+    }
+
+    public function update(UpdateLeadRequest $request, Lead $lead)
+    {
+        $lead->update($request->validated());
+
+        return redirect()
+            ->route('leads.show', $lead)
+            ->with('success', 'Lead updated successfully.');
+    }
+
+    public function edit(Lead $lead): Response
+    {
+        return Inertia::render('Leads/Edit', [
+            'lead' => $lead->load([
+                'owner:id,name',
+                'company:id,name',
+            ]),
+
+            'statuses' => collect(LeadStatus::cases())
+                ->map(fn (LeadStatus $status) => [
+                    'value' => $status->value,
+                    'label' => $status->label(),
+                ]),
+
+            'sources' => collect(LeadSource::cases())
+                ->map(fn (LeadSource $source) => [
+                    'value' => $source->value,
+                    'label' => $source->label(),
+                ]),
+
+            'priorities' => collect(LeadPriority::cases())
+                ->map(fn (LeadPriority $priority) => [
+                    'value' => $priority->value,
+                    'label' => $priority->label(),
+                ]),
+
+            'owners' => User::query()
+                ->select('id', 'name')
+                ->orderBy('name')
+                ->get(),
+
+            'companies' => Company::query()
+                ->select('id', 'name')
+                ->orderBy('name')
+                ->get(),
+        ]);
     }
 }
