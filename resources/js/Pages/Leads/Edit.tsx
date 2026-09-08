@@ -48,14 +48,14 @@ export default function Edit({
     companies,
 }: Props) {
     const { data, setData, put, processing, errors } = useForm<LeadFormData>({
-        name: lead.name,
+        name: lead.name ?? "",
         email: lead.email ?? "",
         phone: lead.phone ?? "",
-        status: lead.status,
+        status: lead.status ?? "new",
         source: lead.source ?? "",
         priority: lead.priority ?? "medium",
-        owner_id: lead.owner_id?.toString() ?? "",
-        company_id: lead.company_id?.toString() ?? "",
+        owner_id: lead.owner_id ? String(lead.owner_id) : "",
+        company_id: lead.company_id ? String(lead.company_id) : "",
     });
 
     const submit = (event: FormEvent<HTMLFormElement>) => {
@@ -82,14 +82,14 @@ export default function Edit({
                 <LeadForm
                     data={data}
                     setData={setData}
+                    errors={errors}
+                    processing={processing}
                     statuses={statuses}
                     sources={sources}
                     priorities={priorities}
                     owners={owners}
                     companies={companies}
-                    errors={errors}
-                    processing={processing}
-                    submitLabel="Save Changes"
+                    submitLabel="Update Lead"
                     onSubmit={submit}
                 />
             </div>

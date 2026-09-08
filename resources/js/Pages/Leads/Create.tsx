@@ -1,5 +1,6 @@
 import { Head, useForm } from "@inertiajs/react";
 import CRMLayout from "@/Layouts/CRMLayout";
+import { LeadFormData } from "./LeadForm";
 
 type Option = {
     value: string;
@@ -31,7 +32,7 @@ export default function Create({
     owners,
     companies,
 }: Props) {
-    const { data, setData, post, processing, errors } = useForm({
+    const { data, setData, post, processing, errors } = useForm<LeadFormData>({
         name: "",
         email: "",
         phone: "",
@@ -42,7 +43,7 @@ export default function Create({
         company_id: "",
     });
 
-    const submit = (e: React.FormEvent) => {
+    const submit = (e: import("react").FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         post("/leads");

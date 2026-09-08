@@ -84,6 +84,7 @@ class LeadController extends Controller
                 'source'  => $filters['source'] ?? null,
                 'priority' => $filters['priority'] ?? null,
                 'owner_id' => $filters['owner_id'] ?? null,
+                'per_page' => $perPage,
             ],
             'statuses' => collect(LeadStatus::cases())
                 ->map(fn (LeadStatus $status) => [

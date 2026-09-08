@@ -212,7 +212,13 @@ export default function Index({
                                 value={perPage}
                                 onChange={(e) => setPerPage(e.target.value)}
                                 className="w-full rounded-xl border-gray-300"
-                            ></select>
+                            >
+                                {[10, 25, 50, 100].map((size) => (
+                                    <option key={size} value={String(size)}>
+                                        {size}
+                                    </option>
+                                ))}
+                            </select>
                         </div>
                         <div>
                             <label className="mb-1 block text-sm font-medium text-gray-700">

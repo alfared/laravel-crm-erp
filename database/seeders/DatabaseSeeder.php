@@ -21,17 +21,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        User::updateOrCreate(
-            [
-                'email' => 'admin@crm.local',
-            ],
-            [
-                'name' => 'Admin',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-            ]
-        );
-
+        if (app()->environment('local')) {
+            User::updateOrCreate(
+                [
+                    'email' => 'admin@crm.local',
+                ],
+                [
+                    'name' => 'Admin',
+                    'password' => Hash::make(env('LOCAL_ADMIN_PASSWORD', 'password')),
+                    'email_verified_at' => now(),
+                ]
+            );
+        }
         $usersToCreate = max(0, 70 - User::count());
         if ($usersToCreate > 0) {
                User::factory()
