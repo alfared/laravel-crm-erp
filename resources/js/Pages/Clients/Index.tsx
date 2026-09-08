@@ -1,15 +1,15 @@
-import CRMLayout from '@/Layouts/CRMLayout'
-import { router } from '@inertiajs/react'
+import CRMLayout from "@/Layouts/CRMLayout";
+import { router } from "@inertiajs/react";
 
 interface Client {
-    id: number
-    name: string
-    email?: string
-    phone?: string
+    id: number;
+    name: string;
+    email?: string;
+    phone?: string;
 }
 
 interface Props {
-    clients: Client[]
+    clients: Client[];
 }
 
 export default function Index({ clients }: Props) {
@@ -22,10 +22,8 @@ export default function Index({ clients }: Props) {
 
             <div className="bg-white rounded-2xl shadow-sm overflow-hidden">
                 <table className="w-full">
-                    <thead
-                        className='border-b bg-slate-50'
-                    >
-                         <tr>
+                    <thead className="border-b bg-slate-50">
+                        <tr>
                             <th className="text-left p-4">Name</th>
                             <th className="text-left p-4">Email</th>
                             <th className="text-left p-4">Phone</th>
@@ -35,7 +33,8 @@ export default function Index({ clients }: Props) {
                     <tbody>
                         {clients.map((client) => (
                             <tr
-                                
+                                key={client.id}
+                                className="transition hover:bg-slate-50"
                             >
                                 <td className="p-4">{client.name}</td>
                                 <td className="p-4">{client.email}</td>

@@ -2,13 +2,28 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Company;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Company extends Model
 {
-    public function clients()
+    use HasFactory;
+
+    protected $fillable = [
+        'name',
+        'website',
+        'industry',
+        'notes',
+    ];
+
+    public function clients(): HasMany
     {
         return $this->hasMany(Client::class);
+    }
+
+    public function leads(): HasMany
+    {
+        return $this->hasMany(Lead::class);
     }
 }
