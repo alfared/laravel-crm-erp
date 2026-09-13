@@ -121,10 +121,60 @@ class ClientController extends Controller
         ]);
     }
 
-    public function show(Client $client)
+    public function create(): Response 
     {
+        return Inertia::render('Clients/Create', [
+            'statuses' => collect(ClientStatus::cases())
+                ->map(fn(ClientStatus $status) => [
+                    'value' => $status->value,
+                    'label' => $status->label(),
+                ])
+                ->values(),
+
+            'companies' => Company::query()
+                ->select('id', 'name')
+                ->orderBy('name')
+                ->get(),
+
+            'owners' => User::query()
+                ->select('id', 'name')
+                ->orderBy('name')
+                ->get(),
+        ]);
+    }
+
+    public function edit(Client $client): Response
+    {
+        return Inertia::render('Clients/Edit', [
+            'client' => $client,
+            'statuses' => collect(ClientStatus::cases())
+                ->map(fn(ClientStatus $status) => [
+                    'value' => $status->value,
+                    'label' => $status->label(),
+                ])
+                ->values(),
+
+            'companies' => Company::query()
+                ->select('id', 'name')
+                ->orderBy('name')
+                ->get(),
+
+            'owners' => User::query()
+                ->select('id', 'name')
+                ->orderBy('name')
+                ->get(),
+        ]);
+    }
+
+    public function show(Client $client): Response
+    {
+        $client->load([
+            'company:id,name',
+            'owner:id,name',
+        ]);
+
         return Inertia::render(
-            'Client/Show',
+            'Clients/Show',
             ['client' => $client]
         );    
     }
