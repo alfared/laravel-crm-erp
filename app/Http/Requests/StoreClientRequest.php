@@ -43,9 +43,9 @@ class StoreClientRequest extends FormRequest
                 'max:50',
             ],
             'company_id' => [
-                'required',
+                'nullable',
                 'integer',
-                'exists:companies,id',
+                Rule::exists('companies', 'id'),
             ],
              'owner_id' => [
                 'nullable',

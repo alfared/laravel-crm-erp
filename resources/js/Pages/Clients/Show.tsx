@@ -11,23 +11,26 @@ type Owner = {
     id: number;
     name: string;
 };
+
 type Client = {
     id: number;
     name: string;
     email: string | null;
     phone: string | null;
+
     status: string;
-    company_id: number | null;
-    owner_id: number | null;
+
+    company: Company | null;
+    owner: Owner | null;
+
     job_title: string | null;
     department: string | null;
     birthday: string | null;
     preferred_language: string | null;
     timezone: string | null;
+
     created_at: string;
     updated_at: string;
-    company: Company | null;
-    owner: Owner | null;
 };
 
 type Props = {
@@ -57,12 +60,16 @@ function statusClasses(status: string): string {
 }
 
 function statusLabel(status: string): string {
+    if (status === "vip") {
+        return "VIP";
+    }
+
     return status
         .replaceAll("_", " ")
-        .replace(/\b\w/g, (char) => char.toUpperCase());
+        .replace(/\b\w/g, (character) => character.toUpperCase());
 }
 
-function formatDate(value: string): string {
+function formatDate(value: string | null): string {
     if (!value) {
         return "—";
     }
@@ -72,6 +79,10 @@ function formatDate(value: string): string {
         month: "long",
         day: "numeric",
     }).format(new Date(value));
+}
+
+function valueOrDash(value: string | null | undefined): string {
+    return value || "—";
 }
 
 export default function Show({ client }: Props) {
@@ -88,6 +99,7 @@ export default function Show({ client }: Props) {
                         >
                             ← Back to Clients
                         </Link>
+
                         <div className="mt-3 flex flex-wrap items-center gap-3">
                             <h1 className="text-2xl font-semibold text-gray-900">
                                 {client.name}
@@ -106,6 +118,7 @@ export default function Show({ client }: Props) {
                             Client profile
                         </p>
                     </div>
+
                     <Link
                         href={`/clients/${client.id}/edit`}
                         className="inline-flex items-center justify-center rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white hover:bg-blue-700"
@@ -115,21 +128,131 @@ export default function Show({ client }: Props) {
                 </div>
 
                 <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-                    <section className="rounded-2xl bg-white p-6 shadow-sm"></section>
+                    <section className="rounded-2xl bg-white p-6 shadow-sm">
+                        <h2 className="text-lg font-semibold text-gray-900">
+                            Contact Information
+                        </h2>
+
+                        <dl className="mt-5 space-y-5">
+                            <div>
+                                <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                                    Email
+                                </dt>
+
+                                <dd className="mt-1 text-sm text-gray-900">
+                                    {client.email ? (
+                                        <a
+                                            href={`mailto:${client.email}`}
+                                            className="text-blue-600 hover:text-blue-800"
+                                        >
+                                            {client.email}
+                                        </a>
+                                    ) : (
+                                        "—"
+                                    )}
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                                    Phone
+                                </dt>
+
+                                <dd className="mt-1 text-sm text-gray-900">
+                                    {client.phone ? (
+                                        <a
+                                            href={`tel:${client.phone}`}
+                                            className="text-blue-600 hover:text-blue-800"
+                                        >
+                                            {client.phone}
+                                        </a>
+                                    ) : (
+                                        "—"
+                                    )}
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                                    Birthday
+                                </dt>
+
+                                <dd className="mt-1 text-sm text-gray-900">
+                                    {formatDate(client.birthday)}
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                                    Preferred Language
+                                </dt>
+
+                                <dd className="mt-1 text-sm text-gray-900">
+                                    {valueOrDash(client.preferred_language)}
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                                    Timezone
+                                </dt>
+
+                                <dd className="mt-1 text-sm text-gray-900">
+                                    {valueOrDash(client.timezone)}
+                                </dd>
+                            </div>
+                        </dl>
+                    </section>
+
                     <section className="rounded-2xl bg-white p-6 shadow-sm">
                         <h2 className="text-lg font-semibold text-gray-900">
                             Professional
                         </h2>
+
+                        <dl className="mt-5 space-y-5">
+                            <div>
+                                <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                                    Company
+                                </dt>
+
+                                <dd className="mt-1 text-sm text-gray-900">
+                                    {client.company?.name ?? "—"}
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                                    Job Title
+                                </dt>
+
+                                <dd className="mt-1 text-sm text-gray-900">
+                                    {valueOrDash(client.job_title)}
+                                </dd>
+                            </div>
+
+                            <div>
+                                <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
+                                    Department
+                                </dt>
+
+                                <dd className="mt-1 text-sm text-gray-900">
+                                    {valueOrDash(client.department)}
+                                </dd>
+                            </div>
+                        </dl>
                     </section>
+
                     <section className="rounded-2xl bg-white p-6 shadow-sm">
                         <h2 className="text-lg font-semibold text-gray-900">
                             CRM Information
                         </h2>
-                        <dl className="mt-5 space-y-4">
+
+                        <dl className="mt-5 space-y-5">
                             <div>
                                 <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
                                     Status
                                 </dt>
+
                                 <dd className="mt-1">
                                     <span
                                         className={`inline-flex rounded-full px-2.5 py-1 text-xs font-medium ${statusClasses(
@@ -140,26 +263,32 @@ export default function Show({ client }: Props) {
                                     </span>
                                 </dd>
                             </div>
+
                             <div>
                                 <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
                                     Account Manager
                                 </dt>
+
                                 <dd className="mt-1 text-sm text-gray-900">
                                     {client.owner?.name ?? "Unassigned"}
                                 </dd>
                             </div>
+
                             <div>
                                 <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
                                     Created
                                 </dt>
+
                                 <dd className="mt-1 text-sm text-gray-900">
                                     {formatDate(client.created_at)}
                                 </dd>
                             </div>
+
                             <div>
                                 <dt className="text-xs font-medium uppercase tracking-wide text-gray-500">
                                     Last Updated
                                 </dt>
+
                                 <dd className="mt-1 text-sm text-gray-900">
                                     {formatDate(client.updated_at)}
                                 </dd>

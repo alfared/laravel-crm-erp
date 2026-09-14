@@ -173,10 +173,9 @@ class ClientController extends Controller
             'owner:id,name',
         ]);
 
-        return Inertia::render(
-            'Clients/Show',
-            ['client' => $client]
-        );    
+        return Inertia::render('Clients/Show', [
+            'client' => $client,
+        ]);
     }
 
     public function store(StoreClientRequest $request)

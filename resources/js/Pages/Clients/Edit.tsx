@@ -40,7 +40,7 @@ export default function Edit({ client, statuses, companies, owners }: Props) {
         owner_id: client.owner_id ? String(client.owner_id) : "",
         job_title: client.job_title ?? "",
         department: client.department ?? "",
-        birthday: client.birthday ?? "",
+        birthday: client.birthday ? client.birthday.slice(0, 10) : "",
         preferred_language: client.preferred_language ?? "",
         timezone: client.timezone ?? "",
         status: client.status ?? "active",

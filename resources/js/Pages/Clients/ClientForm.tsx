@@ -181,6 +181,7 @@ export default function ClientForm({
                         }
                         className="w-full rounded-xl border-gray-300"
                     >
+                        <option value="">Select a company</option>
                         {companies.map((company) => (
                             <option key={company.id} value={company.id}>
                                 {company.name}
@@ -209,6 +210,7 @@ export default function ClientForm({
                         }
                         className="w-full rounded-xl border-gray-300"
                     >
+                        <option value="">Unassigned</option>
                         {owners.map((owner) => (
                             <option key={owner.id} value={owner.id}>
                                 {owner.name}

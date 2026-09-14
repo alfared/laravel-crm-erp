@@ -4,7 +4,7 @@ import { describe, expect, it } from "vitest";
 import ClientTable from "@/Components/Clients/ClientTable";
 
 describe("ClientTable", () => {
-    it("renders clieents", () => {
+    it("renders clients", () => {
         render(
             <ClientTable
                 clients={{
