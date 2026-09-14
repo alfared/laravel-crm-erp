@@ -36,7 +36,7 @@ return new class extends Migration
         Schema::table('clients', function (Blueprint $table) {
             $table->dropIndex((['status']));
 
-            $table->dropDown([
+            $table->dropColumn([
                 'job_title',
                 'department',
                 'birthday',

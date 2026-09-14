@@ -178,7 +178,11 @@ export default function Show({ client }: Props) {
                                 </dt>
 
                                 <dd className="mt-1 text-sm text-gray-900">
-                                    {formatDate(client.birthday)}
+                                    {client.birthday
+                                        ? formatDate(
+                                              `${client.birthday.slice(0, 10)}T00:00:00`,
+                                          )
+                                        : "—"}
                                 </dd>
                             </div>
 
