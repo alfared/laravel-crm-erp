@@ -1,3 +1,4 @@
+import { Client } from "@/Components/Clients/ClientTable";
 import { FormEvent } from "react";
 
 export type Option = {
@@ -15,53 +16,50 @@ export type Company = {
     name: string;
 };
 
-export type LeadFormData = {
+export type ClientFormData = {
     name: string;
     email: string;
     phone: string;
-    status: string;
-    source: string;
-    priority: string;
-    owner_id: string;
     company_id: string;
+    owner_id: string;
+    job_title: string;
+    department: string;
+    birthday: string;
+    preferred_language: string;
+    timezone: string;
+    status: string;
 };
 
-type LeadFormErrors = Partial<Record<keyof LeadFormData, string>>;
+type ClientFormErrors = Partial<Record<keyof ClientFormData, string>>;
 
 type Props = {
-    data: LeadFormData;
-
-    setData: <K extends keyof LeadFormData>(
+    data: ClientFormData;
+    setData: <K extends keyof ClientFormData>(
         key: K,
-        value: LeadFormData[K],
+        value: ClientFormData[K],
     ) => void;
-
-    errors: LeadFormErrors;
+    errors: ClientFormErrors;
 
     processing: boolean;
 
     statuses: Option[];
-    sources: Option[];
-    priorities: Option[];
-    owners: Owner[];
     companies: Company[];
+    owners: Owner[];
 
     submitLabel?: string;
 
     onSubmit: (event: FormEvent<HTMLFormElement>) => void;
 };
 
-export default function LeadForm({
+export default function ClientForm({
     data,
     setData,
     errors,
     processing,
     statuses,
-    sources,
-    priorities,
-    owners,
     companies,
-    submitLabel = "Save Lead",
+    owners,
+    submitLabel = "Save Client",
     onSubmit,
 }: Props) {
     return (
@@ -79,12 +77,11 @@ export default function LeadForm({
                     </label>
 
                     <input
-                        id="name"
                         type="text"
+                        id="name"
                         value={data.name}
                         onChange={(e) => setData("name", e.target.value)}
                         className="w-full rounded-xl border-gray-300"
-                        autoComplete="name"
                         required
                     />
 
@@ -94,7 +91,6 @@ export default function LeadForm({
                         </p>
                     )}
                 </div>
-
                 <div>
                     <label
                         htmlFor="email"
@@ -107,9 +103,10 @@ export default function LeadForm({
                         id="email"
                         type="email"
                         value={data.email}
-                        onChange={(e) => setData("email", e.target.value)}
+                        onChange={(event) =>
+                            setData("email", event.target.value)
+                        }
                         className="w-full rounded-xl border-gray-300"
-                        autoComplete="email"
                     />
 
                     {errors.email && (
@@ -118,7 +115,6 @@ export default function LeadForm({
                         </p>
                     )}
                 </div>
-
                 <div>
                     <label
                         htmlFor="phone"
@@ -131,18 +127,17 @@ export default function LeadForm({
                         id="phone"
                         type="tel"
                         value={data.phone}
-                        onChange={(e) => setData("phone", e.target.value)}
+                        onChange={(event) =>
+                            setData("phone", event.target.value)
+                        }
                         className="w-full rounded-xl border-gray-300"
-                        autoComplete="tel"
                     />
-
                     {errors.phone && (
                         <p className="mt-1 text-sm text-red-600">
                             {errors.phone}
                         </p>
                     )}
                 </div>
-
                 <div>
                     <label
                         htmlFor="status"
@@ -150,11 +145,12 @@ export default function LeadForm({
                     >
                         Status
                     </label>
-
                     <select
                         id="status"
                         value={data.status}
-                        onChange={(e) => setData("status", e.target.value)}
+                        onChange={(event) =>
+                            setData("status", event.target.value)
+                        }
                         className="w-full rounded-xl border-gray-300"
                     >
                         {statuses.map((status) => (
@@ -170,65 +166,35 @@ export default function LeadForm({
                         </p>
                     )}
                 </div>
-
                 <div>
                     <label
-                        htmlFor="source"
+                        htmlFor="company_id"
                         className="mb-1 block text-sm font-medium text-gray-700"
                     >
-                        Source
+                        Company
                     </label>
-
                     <select
-                        id="source"
-                        value={data.source}
-                        onChange={(e) => setData("source", e.target.value)}
+                        id="company_id"
+                        value={data.company_id}
+                        onChange={(event) =>
+                            setData("company_id", event.target.value)
+                        }
                         className="w-full rounded-xl border-gray-300"
                     >
-                        <option value="">No source</option>
-
-                        {sources.map((source) => (
-                            <option key={source.value} value={source.value}>
-                                {source.label}
+                        <option value="">Select a company</option>
+                        {companies.map((company) => (
+                            <option key={company.id} value={company.id}>
+                                {company.name}
                             </option>
                         ))}
                     </select>
 
-                    {errors.source && (
+                    {errors.company_id && (
                         <p className="mt-1 text-sm text-red-600">
-                            {errors.source}
+                            {errors.company_id}
                         </p>
                     )}
                 </div>
-
-                <div>
-                    <label
-                        htmlFor="priority"
-                        className="mb-1 block text-sm font-medium text-gray-700"
-                    >
-                        Priority
-                    </label>
-
-                    <select
-                        id="priority"
-                        value={data.priority}
-                        onChange={(e) => setData("priority", e.target.value)}
-                        className="w-full rounded-xl border-gray-300"
-                    >
-                        {priorities.map((priority) => (
-                            <option key={priority.value} value={priority.value}>
-                                {priority.label}
-                            </option>
-                        ))}
-                    </select>
-
-                    {errors.priority && (
-                        <p className="mt-1 text-sm text-red-600">
-                            {errors.priority}
-                        </p>
-                    )}
-                </div>
-
                 <div>
                     <label
                         htmlFor="owner_id"
@@ -236,15 +202,15 @@ export default function LeadForm({
                     >
                         Owner
                     </label>
-
                     <select
                         id="owner_id"
                         value={data.owner_id}
-                        onChange={(e) => setData("owner_id", e.target.value)}
+                        onChange={(event) =>
+                            setData("owner_id", event.target.value)
+                        }
                         className="w-full rounded-xl border-gray-300"
                     >
                         <option value="">Unassigned</option>
-
                         {owners.map((owner) => (
                             <option key={owner.id} value={owner.id}>
                                 {owner.name}
@@ -258,33 +224,122 @@ export default function LeadForm({
                         </p>
                     )}
                 </div>
-
-                <div className="md:col-span-2">
+                <div>
                     <label
-                        htmlFor="company_id"
+                        htmlFor="job_title"
                         className="mb-1 block text-sm font-medium text-gray-700"
                     >
-                        Company
+                        Job Title
                     </label>
 
-                    <select
-                        id="company_id"
-                        value={data.company_id}
-                        onChange={(e) => setData("company_id", e.target.value)}
+                    <input
+                        id="job_title"
+                        type="text"
+                        value={data.job_title}
+                        onChange={(event) =>
+                            setData("job_title", event.target.value)
+                        }
+                        placeholder="Job Title"
                         className="w-full rounded-xl border-gray-300"
-                    >
-                        <option value="">No company</option>
+                    />
 
-                        {companies.map((company) => (
-                            <option key={company.id} value={company.id}>
-                                {company.name}
-                            </option>
-                        ))}
-                    </select>
-
-                    {errors.company_id && (
+                    {errors.job_title && (
                         <p className="mt-1 text-sm text-red-600">
-                            {errors.company_id}
+                            {errors.job_title}
+                        </p>
+                    )}
+                </div>
+                <div>
+                    <label
+                        htmlFor="department"
+                        className="mb-1 block text-sm font-medium text-gray-700"
+                    >
+                        Department
+                    </label>
+
+                    <input
+                        id="department"
+                        type="text"
+                        value={data.department}
+                        onChange={(event) =>
+                            setData("department", event.target.value)
+                        }
+                        placeholder="Department"
+                        className="w-full rounded-xl border-gray-300"
+                    />
+
+                    {errors.department && (
+                        <p className="mt-1 text-sm text-red-600">
+                            {errors.department}
+                        </p>
+                    )}
+                </div>
+                <div>
+                    <label
+                        htmlFor="birthday"
+                        className="mb-1 block text-sm font-medium text-gray-700"
+                    >
+                        Birthday
+                    </label>
+                    <input
+                        id="birthday"
+                        type="date"
+                        value={data.birthday}
+                        onChange={(event) =>
+                            setData("birthday", event.target.value)
+                        }
+                        className="w-full rounded-xl border-gray-300"
+                    />
+                    {errors.birthday && (
+                        <p className="mt-1 text-sm text-red-600">
+                            {errors.birthday}
+                        </p>
+                    )}
+                </div>
+                <div>
+                    <label
+                        htmlFor="preferred_language"
+                        className="mb-1 block text-sm font-medium text-gray-700"
+                    >
+                        Preferred Language
+                    </label>
+                    <input
+                        id="preferred_language"
+                        type="text"
+                        value={data.preferred_language}
+                        onChange={(event) =>
+                            setData("preferred_language", event.target.value)
+                        }
+                        placeholder="Preferred Language"
+                        className="w-full rounded-xl border-gray-300"
+                    />
+
+                    {errors.preferred_language && (
+                        <p className="mt-1 text-sm text-red-600">
+                            {errors.preferred_language}
+                        </p>
+                    )}
+                </div>
+                <div>
+                    <label
+                        htmlFor="timezone"
+                        className="mb-1 block text-sm font-medium text-gray-700"
+                    >
+                        Timezone
+                    </label>
+                    <input
+                        id="timezone"
+                        type="text"
+                        value={data.timezone}
+                        onChange={(event) =>
+                            setData("timezone", event.target.value)
+                        }
+                        placeholder="Europe/Prague"
+                        className="w-full rounded-xl border-gray-300"
+                    />
+                    {errors.timezone && (
+                        <p className="mt-1 text-sm text-red-600">
+                            {errors.timezone}
                         </p>
                     )}
                 </div>
