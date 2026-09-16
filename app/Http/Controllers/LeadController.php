@@ -111,7 +111,7 @@ class LeadController extends Controller
     public function show(Lead $lead) 
     {
         $lead->load([
-            'notes',
+            'notes.user:id,name',
             'activities',
             'tasks',
         ]);

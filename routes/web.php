@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 use App\Http\Controllers\LeadController;
-use App\Http\Controllers\LeadNoteController;
+use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DealController;
 use App\Http\Controllers\LeadTaskController;
@@ -69,8 +69,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/leads/{lead}/status', [LeadController::class, 'updateStatus'])
         ->name('leads.status.update');
 
-    Route::post('/leads/{lead}/notes', [LeadNoteController::class, 'store'])
-        ->name('lead.notes.store');
+    Route::post('/leads/{lead}/notes', [NoteController::class,'storeForLead'])
+        ->name('leads.notes.store');
+
+    Route::post('/clients/{client}/notes', [NoteController::class,'storeForClient'])
+        ->name('clients.notes.store');
+    
+    Route::delete('/notes/{note}', [NoteController::class, 'destroy'])
+        ->name('notes.destroy');
 
     Route::post('/leads/{lead}/tasks', [LeadTaskController::class, 'store'])
         ->name('lead.tasks.store');

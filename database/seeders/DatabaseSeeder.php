@@ -6,7 +6,7 @@ use App\Models\Activity;
 use App\Models\Client;
 use App\Models\Company;
 use App\Models\Lead;
-use App\Models\LeadNote;
+use App\Models\Note;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Task;
@@ -52,9 +52,11 @@ class DatabaseSeeder extends Seeder
             ->count(70)
             ->create();
 
-        LeadNote::factory()
-            ->count(70)
-            ->create();
+        while (Note::query()->count() < 20) {
+            Note::factory()
+                ->for(Lead::query()->inRandomOrder()->first(), 'noteable')
+                ->create();
+        }
 
         Activity::factory()
             ->count(70)

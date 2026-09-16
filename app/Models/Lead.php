@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany; 
 
 class Lead extends Model
 {
@@ -49,9 +50,9 @@ class Lead extends Model
         return $this->belongsTo(Company::class);
     }
 
-    public function notes(): HasMany
+    public function notes(): MorphMany
     {
-        return $this->hasMany(LeadNote::class)->latest();
+        return $this->morphMany(Note::class, 'noteable')->latest();
     }
 
     public function activities()
