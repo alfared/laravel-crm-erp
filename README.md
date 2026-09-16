@@ -2589,7 +2589,7 @@ The project should be developed in phases.
 - [x] MySQL
 - [x] Redis
 - [x] Authentication
-- [ ] Git repository
+- [x] Git repository
 - [ ] CI pipeline
 - [ ] Testing foundation
 

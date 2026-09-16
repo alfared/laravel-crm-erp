@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Domain\Lead\Models\Lead;
+use App\Models\Lead;
 
 class LeadSeeder extends Seeder
 {
