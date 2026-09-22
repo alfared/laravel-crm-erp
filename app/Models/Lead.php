@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany; 
 
 class Lead extends Model
@@ -57,12 +56,12 @@ class Lead extends Model
 
     public function activities()
     {
-        return $this->hasMany(Activity::class)->latest();
+        return $this->morphMany(Activity::class, 'activityable')->latest();
     }
 
-    public function tasks()
+    public function tasks(): MorphMany
     {
-        return $this->hasMany(Task::class)->latest();
+        return $this->morphMany(Task::class, 'taskable')->latest();
     }
 
     public function scopeActive(Builder $query): Builder

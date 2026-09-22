@@ -112,7 +112,7 @@ class LeadController extends Controller
     {
         $lead->load([
             'notes.user:id,name',
-            'activities',
+            'activities.user:id,name',
             'tasks',
         ]);
 

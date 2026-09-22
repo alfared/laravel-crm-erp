@@ -2,18 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Lead;
-use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Task extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'lead_id',
         'title',
         'description',
         'due_at',
@@ -21,7 +19,7 @@ class Task extends Model
         'user_id',
     ];
 
-    protected function casts(): array 
+    protected function casts(): array
     {
         return [
             'completed' => 'boolean',
@@ -29,9 +27,9 @@ class Task extends Model
         ];
     }
 
-    public function lead(): BelongsTo
+    public function taskable(): MorphTo
     {
-        return $this->belongsTo(Lead::class);
+        return $this->morphTo();
     }
 
     public function user(): BelongsTo

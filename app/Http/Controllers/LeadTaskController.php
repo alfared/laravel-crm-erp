@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Domain\Lead\Models\Lead;
+use App\Models\Lead;
 use App\Models\Task;
 
 class LeadTaskController extends Controller
