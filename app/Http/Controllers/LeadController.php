@@ -112,7 +112,7 @@ class LeadController extends Controller
     {
         $lead->load([
             'notes.user:id,name',
-            'activities',
+            'activities.user:id,name',
             'tasks',
         ]);
 
@@ -148,7 +148,7 @@ class LeadController extends Controller
         return back();
     }
 
-    public function convert(Lead $lead)
+    public function convert(Request $request, Lead $lead)
     {
         $client = Client::create([
             'name' => $lead->name,
@@ -159,7 +159,8 @@ class LeadController extends Controller
 
         $lead->activities()->create([
             'type' => 'converted',
-            'description' => 'Lead converted to client',
+            'description' => 'Client created from lead: ' . $lead->name,
+            'user_id' => $request->user()->id,
         ]);
 
         $lead->delete();

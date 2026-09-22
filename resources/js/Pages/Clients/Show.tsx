@@ -1,6 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
 
 import CRMLayout from "@/Layouts/CRMLayout";
+import ActivitiesTimeline, {
+    type Activity,
+} from "@/Components/CRM/ActivitiesTimeline";
 
 type Company = {
     id: number;
@@ -28,6 +31,8 @@ type Client = {
     birthday: string | null;
     preferred_language: string | null;
     timezone: string | null;
+
+    activities: Activity[];
 
     created_at: string;
     updated_at: string;

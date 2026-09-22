@@ -48,4 +48,14 @@ class Client extends Model
     {
         return $this->morphMany(Note::class, 'noteable')->latest();
     }
+
+    public function activities(): MorphMany
+    {
+        return $this->morphMany(Activity::class, 'activityable')->latest();
+    }
+
+    public function tasks(): MorphMany
+    {
+        return $this->morphMany(Task::class, 'taskable')->latest();
+    }
 }

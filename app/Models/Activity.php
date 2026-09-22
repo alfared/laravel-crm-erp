@@ -2,18 +2,16 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use App\Models\Lead;
-use App\Models\User;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Activity extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'lead_id',
         'type',
         'description',
         'meta',
@@ -24,9 +22,9 @@ class Activity extends Model
         'meta' => 'array',
     ];
 
-    public function lead(): BelongsTo
+    public function activityable(): MorphTo
     {
-         return $this->belongsTo(Lead::class);
+        return $this->morphTo()->withTrashed();
     }
 
     public function user(): BelongsTo

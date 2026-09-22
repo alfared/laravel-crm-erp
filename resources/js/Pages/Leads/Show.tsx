@@ -1,6 +1,9 @@
 import { Head, Link } from "@inertiajs/react";
 import CRMLayout from "@/Layouts/CRMLayout";
 import Notes, { type Note } from "@/Components/CRM/Notes";
+import ActivitiesTimeline, {
+    type Activity,
+} from "@/Components/CRM/ActivitiesTimeline";
 
 type Lead = {
     id: number;
@@ -8,6 +11,7 @@ type Lead = {
     email: string | null;
     phone: string | null;
     notes: Note[];
+    activities: Activity[];
 };
 
 type Props = {
@@ -69,6 +73,9 @@ export default function Show({ lead }: Props) {
                         notes={lead.notes}
                         storeUrl={`/leads/${lead.id}/notes`}
                     />
+                </div>
+                <div className="mt-6">
+                    <ActivitiesTimeline activities={lead.activities} />
                 </div>
             </div>
         </CRMLayout>

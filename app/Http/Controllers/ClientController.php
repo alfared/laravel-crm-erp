@@ -171,6 +171,7 @@ class ClientController extends Controller
         $client->load([
             'company:id,name',
             'owner:id,name',
+            'activities.user:id,name',
         ]);
 
         return Inertia::render('Clients/Show', [
@@ -180,7 +181,14 @@ class ClientController extends Controller
 
     public function store(StoreClientRequest $request)
     {
-        $client = Client::create($request->validated());
+        $validated = $request->validated();
+        $client = Client::create($validated);
+
+        $client->activities()->create([
+            'type' => 'client_created',
+            'description' => 'Client created',
+            'user_id' => $request->user()->id,
+        ]);
 
         return redirect()
             ->route('clients.show', $client)
@@ -189,7 +197,34 @@ class ClientController extends Controller
 
     public function update(UpdateClientRequest $request, Client $client)
     {
-        $client->update($request->validated());
+        $validated = $request->validated();
+        $before = $client->only(array_keys($validated));
+
+        $client->update($validated);
+        $changes = $client->getChanges();
+        unset($changes['updated_at']);
+
+        foreach ($validated as $field => $newValue) {
+            $oldValue = $before[$field] ?? null;
+
+            if ($oldValue != $newValue) {
+                $changes[$field] = [
+                    'from' => $oldValue,
+                    'to' => $newValue
+                ];
+            }
+        }
+
+        if ($changes !== []) {
+            $client->activities()->create([
+                'type' => 'client_updated',
+                'description' => 'Client updated',
+                'user_id' => $request->user()->id,
+                'meta' => [
+                    'changes' => $changes,
+                ],
+            ]);
+        }
 
         return redirect()
             ->route('clients.show', $client)

@@ -33,6 +33,7 @@ class DatabaseSeeder extends Seeder
                 ]
             );
         }
+        
         $usersToCreate = max(0, 70 - User::count());
         if ($usersToCreate > 0) {
                User::factory()
@@ -58,13 +59,28 @@ class DatabaseSeeder extends Seeder
                 ->create();
         }
 
-        Activity::factory()
-            ->count(70)
-            ->create();
+        $leads = Lead::query()->get();
+        $clients = Client::query()->get();
 
-        Task::factory()
-            ->count(70)
-            ->create();
+        while (Activity::query()->count() < 20) {
+            $activityable = fake()->boolean()
+                ? $leads->random()
+                : $clients->random();
+
+            Activity::factory()
+                ->for($activityable, 'activityable')
+                ->create();
+        }
+
+        while (Task::query()->count() < 70) {
+            $taskable = fake()->boolean()
+              ? $leads->random()
+              : $clients->random();
+
+            Task::factory()
+                ->for($taskable, 'taskable')
+                ->create();
+        }
 
         Product::factory()
             ->count(70)

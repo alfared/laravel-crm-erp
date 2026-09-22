@@ -19,33 +19,20 @@ class ActivityFactory extends Factory
      */
     public function definition(): array
     {
-       $type = fake()->randomElement([
-            'created',
-            'status_changed',
-            'note_added',
-            'email',
-            'call',
-            'meeting',
-            'assignment',
-        ]);
+         return [
+            'activityable_type' => Lead::class,
+            'activityable_id' => Lead::factory(),
+            'user_id' => User::factory(),
+            'type' => fake()->randomElement([
+                'lead_created',
+                'status_changed',
+                'note_added',
+                'task_created',
+            ]),
 
-        return [
-            'lead_id' => Lead::query()->inRandomOrder()->value('id'),
-            'user_id' => User::query()->inRandomOrder()->value('id'),
-            'type' => $type,
-            'description' => match ($type) {
-                'created' => 'Lead was created.',
-                'status_changed' => 'Lead status was updated.',
-                'note_added' => 'A note was added to the lead.',
-                'email' => 'Email communication with lead.',
-                'call' => 'Phone call with lead.',
-                'meeting' => 'Meeting with lead.',
-                'assignment' => 'Lead owner was changed.',
-            },
+            'description' => fake()->sentence(),
 
-            'meta' => [
-                'generated' => true,
-            ]
-        ];
+            'meta' => null,
+         ];
     }
 }
