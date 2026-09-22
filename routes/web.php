@@ -10,7 +10,7 @@ use App\Http\Controllers\LeadController;
 use App\Http\Controllers\NoteController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\DealController;
-use App\Http\Controllers\LeadTaskController;
+use App\Http\Controllers\TaskController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -78,11 +78,18 @@ Route::middleware('auth')->group(function () {
     Route::delete('/notes/{note}', [NoteController::class, 'destroy'])
         ->name('notes.destroy');
 
-    Route::post('/leads/{lead}/tasks', [LeadTaskController::class, 'store'])
+    Route::post('/leads/{lead}/tasks',  [TaskController::class, 'storeForLead'])
         ->name('lead.tasks.store');
 
-    Route::patch('/tasks/{task}/toggle', [LeadTaskController::class, 'toggle'])
+    Route::post('/clients/{client}/tasks', [TaskController::class, 'storeForClient'])
+        ->name('client.tasks.store');
+
+    Route::patch('/tasks/{task}/toggle', [TaskController::class, 'toggle'])
         ->name('tasks.toggle');
+
+    Route::delete('/tasks/{task}', [TaskController::class, 'destroy'])
+        ->name('tasks.destroy');
+
 
 
     /*

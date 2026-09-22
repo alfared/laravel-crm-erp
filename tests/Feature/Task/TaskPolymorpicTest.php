@@ -135,4 +135,31 @@ class TaskPolymorphicTest extends TestCase
             $client->is($task->taskable)
         );
     }
+
+    public function test_toggling_a_lead_task_logs_an_activity_on_the_lead(): void
+    {
+        $user = User::factory()->create();
+        $lead = Lead::factory()->create();
+
+        $task = $lead->tasks()->create([
+            'title' => 'Call lead',
+            'completed' => false,
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->post(route('tasks.toggle', $task));
+
+        $response->assertRedirect();
+
+        $this->assertTrue($task->fresh()->completed);
+
+        $this->assertDatabaseHas('activities', [
+            'activityable_type' => Lead::class,
+            'activityable_id' => $lead->id,
+            'type' => 'task_updated',
+            'description' => 'Task completed',
+        ]);
+    }
 }

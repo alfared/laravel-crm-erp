@@ -171,7 +171,6 @@ class ClientController extends Controller
         $client->load([
             'company:id,name',
             'owner:id,name',
-            'notes.user:id,name',
             'activities.user:id,name',
         ]);
 
@@ -202,8 +201,8 @@ class ClientController extends Controller
         $before = $client->only(array_keys($validated));
 
         $client->update($validated);
-
-        $changes = [];
+        $changes = $client->getChanges();
+        unset($changes['updated_at']);
 
         foreach ($validated as $field => $newValue) {
             $oldValue = $before[$field] ?? null;
@@ -219,11 +218,11 @@ class ClientController extends Controller
         if ($changes !== []) {
             $client->activities()->create([
                 'type' => 'client_updated',
-                'description' => 'Client profile updated',
+                'description' => 'Client updated',
+                'user_id' => $request->user()->id,
                 'meta' => [
                     'changes' => $changes,
                 ],
-                'user_id' => $request->user()->id,
             ]);
         }
 

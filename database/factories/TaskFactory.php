@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Lead;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -11,19 +12,15 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class TaskFactory extends Factory
 {
-     protected $model = Task::class;
+    protected $model = Task::class;
 
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
+    
     public function definition(): array
     {
         return [
-            'user_id' => User::query()
-                ->inRandomOrder()
-                ->value('id'),
+            'taskable_type' => Lead::class,
+            'taskable_id' => Lead::factory(),
+            'user_id' => User::factory(),
             'title' => fake()->randomElement([
                 'Call customer',
                 'Send proposal',

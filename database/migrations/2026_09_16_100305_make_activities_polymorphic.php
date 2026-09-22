@@ -49,7 +49,15 @@ return new class extends Migration
         Schema::table('activities', function (Blueprint $table) {
             $table->dropForeign(['lead_id']);
             $table->dropColumn('lead_id');
-        });
+
+            $table->string('activityable_type')
+                ->nullable(false)
+                ->change();
+
+            $table->unsignedBigInteger('activityable_id')
+                ->nullable(false)
+                ->change();
+            });
     }
 
     /**
