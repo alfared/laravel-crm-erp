@@ -44,15 +44,15 @@ class LeadTaskController extends Controller
                 ! $task->completed,
         ]);
 
-          $task->lead
-            ->activities()
-            ->create([
-                'type' => 'task_updated',
-                'description' =>
-                    $task->completed
-                        ? 'Task completed'
-                        : 'Task reopened',
-            ]);
+        $taskable = $task->taskable;
+
+        $taskable?->activities()->create([
+            'type' => 'task_updated',
+            'description' =>
+                $task->completed
+                    ? 'Task completed'
+                    : 'Task reopened',
+        ]);
 
         return back();
     }

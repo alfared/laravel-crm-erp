@@ -135,4 +135,56 @@ class TaskPolymorphicTest extends TestCase
             $client->is($task->taskable)
         );
     }
+
+    public function test_toggling_a_lead_task_logs_an_activity_on_the_lead(): void
+    {
+        $user = User::factory()->create();
+        $lead = Lead::factory()->create();
+        $task = $lead->tasks()->create([
+            'title' => 'Call lead',
+            'completed' => false,
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->patch(route('tasks.toggle', $task));
+
+        $response->assertRedirect();
+
+        $this->assertTrue($task->fresh()->completed);
+
+        $this->assertDatabaseHas('activities', [
+            'activityable_type' => Lead::class,
+            'activityable_id' => $lead->id,
+            'type' => 'task_updated',
+            'description' => 'Task completed',
+        ]);
+    }
+
+    public function test_toggling_a_client_task_logs_an_activity_on_the_client(): void
+    {
+        $user = User::factory()->create();
+        $client = Client::factory()->create();
+        $task = $client->tasks()->create([
+            'title' => 'Call client',
+            'completed' => false,
+            'user_id' => $user->id,
+        ]);
+
+        $response = $this
+            ->actingAs($user)
+            ->patch(route('tasks.toggle', $task));
+
+        $response->assertRedirect();
+
+        $this->assertTrue($task->fresh()->completed);
+
+        $this->assertDatabaseHas('activities', [
+            'activityable_type' => Client::class,
+            'activityable_id' => $client->id,
+            'type' => 'task_updated',
+            'description' => 'Task completed',
+        ]);
+    }
 }
