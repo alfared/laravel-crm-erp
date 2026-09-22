@@ -46,7 +46,9 @@ class LeadTaskController extends Controller
 
         $taskable = $task->taskable;
 
-        $taskable?->activities()->create([
+        abort_unless($taskable !== null, 404);
+
+        $taskable->activities()->create([
             'type' => 'task_updated',
             'description' =>
                 $task->completed
