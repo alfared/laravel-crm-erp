@@ -46,11 +46,7 @@ class LeadTaskController extends Controller
 
         $taskable = $task->taskable;
 
-        throw_if(
-            $taskable === null,
-            \RuntimeException::class,
-            'Task parent is missing.'
-        );
+        abort_if($taskable === null, 409, 'Task parent is missing.');
 
         $taskable->activities()->create([
             'type' => 'task_updated',
