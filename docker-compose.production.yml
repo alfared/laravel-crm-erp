@@ -1,0 +1,116 @@
+services:
+  app:
+    image: crm-app:production
+    restart: unless-stopped
+
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_KEY: ${APP_KEY}
+      APP_URL: ${APP_URL:-http://localhost:8081}
+
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_DATABASE: ${DB_DATABASE:-crm}
+      DB_USERNAME: ${DB_USERNAME:-crm}
+      DB_PASSWORD: ${DB_PASSWORD}
+
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
+      SESSION_DRIVER: database
+      CACHE_STORE: database
+      QUEUE_CONNECTION: database
+
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "php artisan about >/dev/null 2>&1 || exit 1"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    networks:
+      - crm-production
+
+  nginx:
+    image: crm-nginx:production
+    restart: unless-stopped
+
+    ports:
+      - "8081:8080"
+
+    depends_on:
+      app:
+        condition: service_healthy
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q --spider http://127.0.0.1:8080/ || exit 1"
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+    networks:
+      - crm-production
+
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE:-crm}
+      MYSQL_USER: ${DB_USERNAME:-crm}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+
+    volumes:
+      - crm-production-db:/var/lib/mysql
+
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h 127.0.0.1 -uroot -p$$MYSQL_ROOT_PASSWORD --silent"
+        ]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 20s
+
+    networks:
+      - crm-production
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+    networks:
+      - crm-production
+
+networks:
+  crm-production:
+    driver: bridge
+
+volumes:
+  crm-production-db:

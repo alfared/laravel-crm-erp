@@ -22,3 +22,6 @@ yarn-error.log
 pnpm-debug.log
 
 docker-compose.override.yml
+.env.production.local
+.env.k8s-preprod.local
+.phpunit.result.cache

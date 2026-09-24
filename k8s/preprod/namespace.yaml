@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: crm-preprod
+  labels:
+    app.kubernetes.io/part-of: laravel-crm
+    environment: preprod
