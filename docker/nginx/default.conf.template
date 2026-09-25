@@ -32,7 +32,7 @@ server {
     location = /index.php {
         include fastcgi_params;
 
-        fastcgi_pass app:9000;
+        fastcgi_pass ${PHP_FPM_UPSTREAM};
 
         fastcgi_param SCRIPT_FILENAME /var/www/public/index.php;
         fastcgi_param SCRIPT_NAME /index.php;

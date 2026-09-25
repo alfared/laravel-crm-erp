@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: crm-migrate
+  namespace: crm-preprod
+  labels:
+    app.kubernetes.io/name: crm-migrate
+    app.kubernetes.io/part-of: laravel-crm
+    environment: preprod
+
+spec:
+  backoffLimit: 2
+
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: crm-migrate
+        app.kubernetes.io/part-of: laravel-crm
+        environment: preprod
+
+    spec:
+      restartPolicy: Never
+
+      containers:
+        - name: migrate
+          image: crm-app:production
+          imagePullPolicy: IfNotPresent
+
+          command:
+            - php
+            - artisan
+            - migrate
+            - --force
+
+          envFrom:
+            - configMapRef:
+                name: crm-app-config
+
+            - secretRef:
+                name: crm-app-secret
+
+          resources:
+            requests:
+              cpu: "50m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"

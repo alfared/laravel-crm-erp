@@ -27,8 +27,10 @@ RUN rm -rf public/build public/hot \
 # ------------------------------------------------------------
 FROM nginx:1.27-alpine AS production
 
-COPY docker/nginx/production.conf \
-    /etc/nginx/conf.d/default.conf
+COPY docker/nginx/default.conf.template \
+    /etc/nginx/templates/default.conf.template
+
+ENV PHP_FPM_UPSTREAM=app:9000
 
 COPY public /var/www/public
 
